@@ -66,7 +66,7 @@
         var level = 0;
         var enableWord = '';
         var alphabetsAtATime = 1;
-        var letters = 4;
+        var letters = 2;
 
 
 
@@ -78,7 +78,7 @@
             }
             else {
                 enableWord = 'yes';
-                console.log(enableWord);
+                // console.log(enableWord);
                 x.style.display = "inline";
             }
             // ascii = Math.floor(Math.random() * (+122 - +97)) + +97;
@@ -149,7 +149,7 @@
                 ctx.fillText(this.alphabet, this.x, this.y);
                 if (isNewAlphabet && this.y === spawnAlphabet) {
                     // ctx.fillText(this.alphabet, this.x+100, this.y);
-                    console.log('newcalled');
+                    // console.log('newcalled');
                     createNewAlphabet();
                 }
             }
@@ -169,7 +169,7 @@
                             this.ascii = Math.floor(Math.random() * (+122 - +97)) + +97;
                             this.alphabet += String.fromCharCode(this.ascii);
                             letter--;
-                            console.log(letter);
+                            // console.log(letter);
                         }
                     }
                     else {
@@ -184,8 +184,13 @@
 
         window.addEventListener("keydown", function (event) {
             // console.log(event.key);
-            if (keyPressed.length >= 2) {
-                console.log("keyPressed reset");
+            if (keyPressed.length >= 2 && enableWord) {
+                // console.log("keyPressed reset");
+                // console.log(keyPressed);
+                keyPressed = '';
+            }
+            else if (keyPressed.length >= 1 && !enableWord) {
+                // console.log("keyPressed reset");
                 // console.log(keyPressed);
                 keyPressed = '';
             }
@@ -200,11 +205,12 @@
             if (myGamePiece[i].alphabet === keyPressed) {
                 myGamePiece.splice(i, 1);
                 keyPressed = '';
-                console.log("deleted");
-            }
-            if (myGamePiece.length === 0) {
+                // console.log("deleted");
                 createNewAlphabet();
             }
+            // if (myGamePiece.length === 0) {
+            //     createNewAlphabet();
+            // }
         }
 
         function updateGameArea() {
