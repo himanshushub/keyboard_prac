@@ -1,28 +1,27 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <style>
-        canvas {
-            border: 1px solid #d3d3d3;
-            background-color: #08817b9b;
-        }
-        #contentDisplay h2 {
+      canvas {
+        border: 1px solid #d3d3d3;
+        background-color: #08817b9b;
+      }
+      #contentDisplay h2 {
         display: inline;
         padding: 10px;
-        }
-        #wordEnable{
-            display: none;
-        }
-        
+      }
+      #wordEnable {
+        display: none;
+      }
     </style>
+  </head>
 
-</head>
-
-<body onload="startGame()" style="background-color:rgba(9, 199, 183, 0.342);">
-
+  <body
+    onload="startGame()"
+    style="background-color: rgba(9, 199, 183, 0.342);"
+  >
     <!-- <form onsubmit="levelSelector(event)">
         <select name="cars">
           <option value="volvo">Volvo</option>
@@ -33,228 +32,215 @@
         <br><br>
         <input type="submit">
     </form> -->
-    <div id="contentDisplay" style="text-align:center">
-        <p id="wordEnable">Word is Enabled</p>
-        <h2 id="keyPressedDisplay"></h2>
-        <button type="button" onclick="createWord()">Word Enable</button>
-        <input value="1" type="number" id="alphabetsAtATime" />
-        <button onclick="start()">Start</button>
-        <button onclick="reset()">RESET</button>
+    <div id="contentDisplay" style="text-align: center;">
+      <p id="wordEnable">Word is Enabled</p>
+      <h2 id="keyPressedDisplay"></h2>
+      <button type="button" onclick="createWord()">Word Enable</button>
+      <input value="1" type="number" id="alphabetsAtATime" />
+      <button onclick="start()">Start</button>
+      <button onclick="reset()">RESET</button>
     </div>
 
-    
     <script>
+      // Two same alphabet should not be created at the sme time
+      // Done:- If you are creating two same alphabet then delete only one at one keypressed
+      // Take level as input and start with minimum 2/3/4/5 Alphabet according to the LEVEL
+      // These mnimum number of the alphabet should be there at any given point of time (Max you can hard code of a particular level)
+      // Change speed for every level
+      // word game
 
+      var myGamePiece = [];
+      var defaultSpeed = 3;
+      var canvasWidth = window.innerWidth - 30;
+      var canvasHeight = window.innerHeight - 100;
+      var isNewAlphabet = 0;
+      var spawnAlphabet;
+      var keyPressed = "";
+      var level = 0;
+      var enableWord = "";
+      var alphabetsAtATime = 1;
+      var letters = 2;
 
-
-        // Two same alphabet should not be created at the sme time
-        // Done:- If you are creating two same alphabet then delete only one at one keypressed
-        // Take level as input and start with minimum 2/3/4/5 Alphabet according to the LEVEL
-        // These mnimum number of the alphabet should be there at any given point of time (Max you can hard code of a particular level)
-        // Change speed for every level
-        // word game
-
-
-
-        var myGamePiece = [];
-        var defaultSpeed = 3;
-        var canvasWidth = window.innerWidth - 30;
-        var canvasHeight = window.innerHeight - 100;
-        var isNewAlphabet = 0;
-        var spawnAlphabet;
-        var keyPressed = '';
-        var level = 0;
-        var enableWord = '';
-        var alphabetsAtATime = 1;
-        var letters = 2;
-
-
-
-        function createWord() {
-            var x = document.getElementById("wordEnable");
-            if (x.style.display === "inline") {
-                x.style.display = "none";
-                enableWord = 'No';
-            }
-            else {
-                enableWord = 'yes';
-                // console.log(enableWord);
-                x.style.display = "inline";
-            }
-            // ascii = Math.floor(Math.random() * (+122 - +97)) + +97;
-            // alphabet = String.fromCharCode(ascii);
-            // ascii = Math.floor(Math.random() * (+122 - +97)) + +97;
-            // alphabet += String.fromCharCode(ascii);
-            // console.log(alphabet);
-
+      function createWord() {
+        var x = document.getElementById("wordEnable");
+        if (x.style.display === "inline") {
+          x.style.display = "none";
+          enableWord = "No";
+        } else {
+          enableWord = "yes";
+          // console.log(enableWord);
+          x.style.display = "inline";
         }
+        // ascii = Math.floor(Math.random() * (+122 - +97)) + +97;
+        // alphabet = String.fromCharCode(ascii);
+        // ascii = Math.floor(Math.random() * (+122 - +97)) + +97;
+        // alphabet += String.fromCharCode(ascii);
+        // console.log(alphabet);
+      }
 
-        // function levelSelector(event){
-        //     console.log(event);
-        //     event.preventDefault();
-        // }
+      // function levelSelector(event){
+      //     console.log(event);
+      //     event.preventDefault();
+      // }
 
+      function startGame() {
+        myGamePiece.push(
+          new component(30, 30, "skyblue", canvasWidth, canvasHeight, 0)
+        );
+        // console.log(myGamePiece[arrayAlphabet]);
+        myGameArea.start();
+      }
 
-        function startGame() {
-            myGamePiece.push(new component(30, 30, "skyblue", canvasWidth, canvasHeight, 0));
-            // console.log(myGamePiece[arrayAlphabet]);
-            myGameArea.start();
+      function createNewAlphabet() {
+        if (myGamePiece.length >= alphabetsAtATime) {
+          // console.log(myGamePiece.length);
+          return;
         }
+        x = Math.floor(Math.random() * (+canvasWidth - +0)) + +0;
+        myGamePiece.push(
+          new component(30, 30, "skyblue", x, canvasHeight, defaultSpeed)
+        );
+        // console.log(myGamePiece[arrayAlphabet]);
+        // console.log(myGamePiece[0]);
+        isNewAlphabet = 0;
+      }
 
-        function createNewAlphabet() {
-            if (myGamePiece.length >= alphabetsAtATime) {
-                // console.log(myGamePiece.length);
-                return;
-            }
-            x = Math.floor(Math.random() * (+canvasWidth - +0)) + +0;
-            myGamePiece.push(new component(30, 30, "skyblue", x, canvasHeight, defaultSpeed));
-            // console.log(myGamePiece[arrayAlphabet]);
-            // console.log(myGamePiece[0]);
-            isNewAlphabet = 0;
-            
-        }
+      var myGameArea = {
+        canvas: document.createElement("canvas"),
+        start: function () {
+          this.canvas.width = canvasWidth;
+          this.canvas.height = canvasHeight;
+          this.context = this.canvas.getContext("2d");
+          document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+          // ctx = myGameArea.context;
+          this.interval = setInterval(updateGameArea, 20);
+        },
+        clear: function () {
+          this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        },
+      };
 
-        var myGameArea = {
-            canvas: document.createElement("canvas"),
-            start: function () {
-                this.canvas.width = canvasWidth;
-                this.canvas.height = canvasHeight;
-                this.context = this.canvas.getContext("2d");
-                document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-                // ctx = myGameArea.context;
-                this.interval = setInterval(updateGameArea, 20);
-
-            },
-            clear: function () {
-                this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            }
-        }
-
-
-        function component(width, height, color, x, y, defaultSpeed) {
-            this.width = width;
-            this.height = height;
-            this.speedX = 0;
-            this.speedY = defaultSpeed;
-            this.x = x / 2;
+      function component(width, height, color, x, y, defaultSpeed) {
+        this.width = width;
+        this.height = height;
+        this.speedX = 0;
+        this.speedY = defaultSpeed;
+        this.x = x / 2;
+        this.y = 0;
+        this.ascii;
+        this.alphabet = "start";
+        this.update = function () {
+          ctx = myGameArea.context;
+          // ctx.fillStyle = color;
+          // ctx.rect(this.x, this.y, this.width, this.height);
+          // ctx.stroke();
+          ctx.font = "30px Arial";
+          ctx.fillText(this.alphabet, this.x, this.y);
+          if (isNewAlphabet && this.y === spawnAlphabet) {
+            // ctx.fillText(this.alphabet, this.x+100, this.y);
+            // console.log('newcalled');
+            createNewAlphabet();
+          }
+        };
+        this.newPos = function () {
+          if (this.y < canvasHeight) {
+            // this.x += this.speedX;
+            this.y += this.speedY;
+          } else {
             this.y = 0;
-            this.ascii;
-            this.alphabet = "start";
-            this.update = function () {
-                ctx = myGameArea.context;
-                // ctx.fillStyle = color;
-                // ctx.rect(this.x, this.y, this.width, this.height);
-                // ctx.stroke();
-                ctx.font = "30px Arial";
-                ctx.fillText(this.alphabet, this.x, this.y);
-                if (isNewAlphabet && this.y === spawnAlphabet) {
-                    // ctx.fillText(this.alphabet, this.x+100, this.y);
-                    // console.log('newcalled');
-                    createNewAlphabet();
-                }
+            this.x =
+              Math.floor(Math.random() * (+(canvasWidth - 30) - +0)) + +0; // To change the horizontal position of the alphabet
+            spawnAlphabet =
+              Math.floor(Math.random() * (+canvasHeight - +10)) + +10;
+            isNewAlphabet = 1;
+            if (enableWord === "yes") {
+              var letter = letters;
+              this.alphabet = "";
+              while (letter) {
+                this.ascii = Math.floor(Math.random() * (+122 - +97)) + +97;
+                this.alphabet += String.fromCharCode(this.ascii);
+                letter--;
+                // console.log(letter);
+              }
+            } else {
+              this.ascii = Math.floor(Math.random() * (+122 - +97)) + +97;
+              this.alphabet = String.fromCharCode(this.ascii);
             }
-            this.newPos = function () {
-                if (this.y < canvasHeight) {// this.x += this.speedX;
-                    this.y += this.speedY;
-                }
-                else {
-                    this.y = 0;
-                    this.x = Math.floor(Math.random() * (+(canvasWidth - 30) - +0)) + +0;// To change the horizontal position of the alphabet
-                    spawnAlphabet = Math.floor(Math.random() * (+canvasHeight - +10)) + +10;
-                    isNewAlphabet = 1;
-                    if (enableWord === 'yes') {
-                        var letter = letters;
-                        this.alphabet = '';
-                        while (letter) {
-                            this.ascii = Math.floor(Math.random() * (+122 - +97)) + +97;
-                            this.alphabet += String.fromCharCode(this.ascii);
-                            letter--;
-                            // console.log(letter);
-                        }
-                    }
-                    else {
-                        this.ascii = Math.floor(Math.random() * (+122 - +97)) + +97;
-                        this.alphabet = String.fromCharCode(this.ascii);
-                    }
-                }
-            }
-        }
+          }
+        };
+      }
 
-
-
-        window.addEventListener("keydown", function (event) {
-            // console.log(event.key);
-            if (keyPressed.length >= 2 && enableWord) {
-                // console.log("keyPressed reset");
-                // console.log(keyPressed);
-                keyPressed = '';
-            }
-            else if (keyPressed.length >= 1 && !enableWord) {
-                // console.log("keyPressed reset");
-                // console.log(keyPressed);
-                keyPressed = '';
-            }
-            keyPressed += event.key;
-            document.getElementById("keyPressedDisplay").innerHTML = keyPressed;
+      window.addEventListener(
+        "keydown",
+        function (event) {
+          // console.log(event.key);
+          if (keyPressed.length >= 2 && enableWord) {
+            // console.log("keyPressed reset");
             // console.log(keyPressed);
-        }, true);
+            keyPressed = "";
+          } else if (keyPressed.length >= 1 && !enableWord) {
+            // console.log("keyPressed reset");
+            // console.log(keyPressed);
+            keyPressed = "";
+          }
+          keyPressed += event.key;
+          document.getElementById("keyPressedDisplay").innerHTML = keyPressed;
+          // console.log(keyPressed);
+        },
+        true
+      );
 
-
-        function deleteOnKeyPressed(i) {
-            // console.log(myGamePiece[i].alphabet);
-            if (myGamePiece[i].alphabet === keyPressed) {
-                myGamePiece.splice(i, 1);
-                keyPressed = '';
-                // console.log("deleted");
-                createNewAlphabet();
-            }
-            // if (myGamePiece.length === 0) {
-            //     createNewAlphabet();
-            // }
+      function deleteOnKeyPressed(i) {
+        // console.log(myGamePiece[i].alphabet);
+        if (myGamePiece[i].alphabet === keyPressed) {
+          myGamePiece.splice(i, 1);
+          keyPressed = "";
+          // console.log("deleted");
+          createNewAlphabet();
         }
+        // if (myGamePiece.length === 0) {
+        //     createNewAlphabet();
+        // }
+      }
 
-        function updateGameArea() {
-            var i = 0;
-            myGameArea.clear();
-            for (i; i <= myGamePiece.length - 1; i++) {
-                gamePeice = myGamePiece[i];
-                // console.log(myGamePiece[arrayAlphabet]);
-                gamePeice.newPos();
-                gamePeice.update();
-                deleteOnKeyPressed(i);
-            }
-            // console.log(myGamePiece[arrayAlphabet]);
+      function updateGameArea() {
+        var i = 0;
+        myGameArea.clear();
+        for (i; i <= myGamePiece.length - 1; i++) {
+          gamePeice = myGamePiece[i];
+          // console.log(myGamePiece[arrayAlphabet]);
+          gamePeice.newPos();
+          gamePeice.update();
+          deleteOnKeyPressed(i);
         }
+        // console.log(myGamePiece[arrayAlphabet]);
+      }
 
-        function start() {
-            alphabetsAtATime = document.getElementById("alphabetsAtATime").value;
-            for (i = 0; i <= myGamePiece.length - 1; i++) {
-                myGamePiece[i].speedY += defaultSpeed;
-            }
+      function start() {
+        alphabetsAtATime = document.getElementById("alphabetsAtATime").value;
+        for (i = 0; i <= myGamePiece.length - 1; i++) {
+          myGamePiece[i].speedY += defaultSpeed;
         }
+      }
 
-        function reset() {
-            // console.log(myGamePiece.length);
+      function reset() {
+        // console.log(myGamePiece.length);
 
-            myGamePiece.splice(1, myGamePiece.length);
+        myGamePiece.splice(1, myGamePiece.length);
 
-            // console.log(myGamePiece.length);
-            myGamePiece[0].x = Math.floor(Math.random() * (+canvasWidth - +0)) + +0;// New horizontal position for the first Alphabet
-            myGamePiece[0].y = 0;
-            myGamePiece[0].speedY = 0;
-            myGamePiece[0].alphabet = "start";
-            enableWord = 'No';
-            keyPressed = '';
-            alphabetsAtATime = 1;
-            var x = document.getElementById("wordEnable");
-            x.style.display = "none";
-            document.getElementById("keyPressedDisplay").innerHTML = keyPressed;
-            document.getElementById("alphabetsAtATime").value = alphabetsAtATime;
-        }
-
+        // console.log(myGamePiece.length);
+        myGamePiece[0].x = Math.floor(Math.random() * (+canvasWidth - +0)) + +0; // New horizontal position for the first Alphabet
+        myGamePiece[0].y = 0;
+        myGamePiece[0].speedY = 0;
+        myGamePiece[0].alphabet = "start";
+        enableWord = "No";
+        keyPressed = "";
+        alphabetsAtATime = 1;
+        var x = document.getElementById("wordEnable");
+        x.style.display = "none";
+        document.getElementById("keyPressedDisplay").innerHTML = keyPressed;
+        document.getElementById("alphabetsAtATime").value = alphabetsAtATime;
+      }
     </script>
-   
-
-</body>
-
+  </body>
 </html>
